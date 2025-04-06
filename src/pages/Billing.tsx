@@ -165,6 +165,14 @@ export default function Billing() {
   // Pie chart colors
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
 
+  // Fix the type issue in formatters
+  const formatCurrency = (value: any) => {
+    if (typeof value === 'number') {
+      return `$${value.toFixed(2)}`;
+    }
+    return `$${value}`;
+  };
+
   const renderBillingList = (billingList: BillingRecord[]) => (
     <div className="rounded-md border overflow-hidden">
       <Table>
@@ -227,13 +235,13 @@ export default function Billing() {
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="value"
-                    label={({ name, value }) => `${name}: $${value.toFixed(0)}`}
+                    label={({ name, value }) => `${name}: $${typeof value === 'number' ? value.toFixed(0) : value}`}
                   >
                     {categoryRevenue.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value) => ['$' + value.toFixed(2), 'Revenue']} />
+                  <Tooltip formatter={(value) => [formatCurrency(value), 'Revenue']} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
@@ -253,7 +261,7 @@ export default function Billing() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
-                  <Tooltip formatter={(value) => ['$' + value.toFixed(2), 'Revenue']} />
+                  <Tooltip formatter={(value) => [formatCurrency(value), 'Revenue']} />
                   <Legend />
                   <Bar dataKey="total" fill="#1E88E5" name="Total Revenue" />
                 </BarChart>
