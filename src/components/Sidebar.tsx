@@ -18,6 +18,7 @@ interface SidebarLink {
   title: string;
   path: string;
   icon: React.ReactNode;
+  requiresAuth?: boolean;
 }
 
 export default function Sidebar() {
@@ -30,15 +31,25 @@ export default function Sidebar() {
     { title: 'My Bookings', path: '/bookings', icon: <CalendarClock className="w-5 h-5" /> },
     { title: 'My Patients', path: '/patients', icon: <Users className="w-5 h-5" /> },
     { title: 'Billing', path: '/billing', icon: <Receipt className="w-5 h-5" /> },
-    { title: 'Accounts', path: '/accounts', icon: <Wallet className="w-5 h-5" /> },
-    { title: 'Communication', path: '/communication', icon: <MessageSquare className="w-5 h-5" /> },
+    { 
+      title: 'Accounts', 
+      path: '/accounts', 
+      icon: <Wallet className="w-5 h-5" />,
+      requiresAuth: true 
+    },
+    { 
+      title: 'Communication', 
+      path: '/communication', 
+      icon: <MessageSquare className="w-5 h-5" />,
+      requiresAuth: true
+    },
   ];
 
   return (
     <aside 
-      className={`bg-sidebar h-screen transition-all duration-300 border-r ${
+      className={`bg-sidebar fixed h-screen shadow-md transition-all duration-300 border-r z-20 ${
         collapsed ? 'w-20' : 'w-64'
-      } fixed left-0 top-0 z-10`}
+      }`}
     >
       <div className="flex items-center justify-between p-4 border-b">
         {!collapsed && (
@@ -48,7 +59,7 @@ export default function Sidebar() {
           variant="ghost" 
           size="icon" 
           onClick={() => setCollapsed(!collapsed)}
-          className="ml-auto"
+          className={collapsed ? "mx-auto" : "ml-auto"}
         >
           <Menu className="h-5 w-5" />
         </Button>

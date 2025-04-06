@@ -14,10 +14,10 @@ export default function SearchBar() {
   };
 
   return (
-    <div className="search-bar z-10">
+    <div className="search-bar w-full mb-4">
       <form 
         onSubmit={handleSearch} 
-        className="relative flex bg-white rounded-full shadow-lg border overflow-hidden"
+        className="relative flex bg-white rounded-full shadow-lg border overflow-hidden w-full max-w-6xl mx-auto"
       >
         <Input
           type="text"

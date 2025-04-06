@@ -103,14 +103,4 @@
   .hms-main-content {
     @apply flex-1 p-4 lg:p-6 overflow-auto;
   }
-  
-  .search-bar {
-    @apply fixed bottom-4 left-[calc(16rem+1rem)] right-4 max-w-3xl mx-auto;
-  }
-  
-  @media (max-width: 1024px) {
-    .search-bar {
-      @apply left-4;
-    }
-  }
 }
