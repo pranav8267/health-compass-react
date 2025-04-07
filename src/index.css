@@ -102,9 +102,4 @@
     width: 16rem;
     z-index: 50;
   }
-  
-  .chat-container {
-    width: 33.333%;
-    height: 100vh;
-  }
 }

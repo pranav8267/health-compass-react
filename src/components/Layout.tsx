@@ -1,10 +1,10 @@
 
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from '@/components/Sidebar';
-import ChatBox from '@/components/ChatBox';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
+import FloatingChat from '@/components/FloatingChat';
 
 interface LayoutProps {
   children: ReactNode;
@@ -16,12 +16,6 @@ export default function Layout({ children, className }: LayoutProps) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    }
-  }, [isAuthenticated, navigate]);
-
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
@@ -30,19 +24,14 @@ export default function Layout({ children, className }: LayoutProps) {
       </div>
       
       {/* Main content */}
-      <div className="flex flex-1 ml-64">
-        {/* Page content */}
-        <main className={cn("flex-1 overflow-y-auto p-6", className)}>
-          <div className="container mx-auto">
-            {children}
-          </div>
-        </main>
-        
-        {/* Chat */}
-        <div className="chat-container w-1/3">
-          <ChatBox />
+      <main className={cn("flex-1 ml-64 overflow-y-auto p-6", className)}>
+        <div className="container mx-auto">
+          {children}
         </div>
-      </div>
+      </main>
+      
+      {/* Floating Chat Button */}
+      <FloatingChat />
     </div>
   );
 }
