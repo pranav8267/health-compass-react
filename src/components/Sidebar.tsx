@@ -52,6 +52,8 @@ export default function Sidebar() {
   useEffect(() => {
     if (selectedDepartment) {
       localStorage.setItem('selectedDepartment', selectedDepartment);
+    } else {
+      localStorage.removeItem('selectedDepartment');
     }
   }, [selectedDepartment]);
 
@@ -100,10 +102,24 @@ export default function Sidebar() {
     });
   };
 
+  const handleDepartmentSelect = (deptName: string) => {
+    if (selectedDepartment === deptName) {
+      setSelectedDepartment(null);
+    } else {
+      setSelectedDepartment(deptName);
+    }
+  };
+
   return (
     <div className={`bg-sidebar fixed h-full shadow-md border-r w-64`}>
       <div className="flex items-center justify-between p-4 border-b">
-        <h1 className="text-xl font-bold text-primary">HMS Portal</h1>
+        <div className="flex items-center">
+          <img 
+            src="/lovable-uploads/d42ca3b9-6a51-4cc1-8418-fb5697cf7028.png" 
+            alt="Doctora.ai Logo" 
+            className="h-8"
+          />
+        </div>
         <Button 
           variant="ghost" 
           size="icon"
@@ -137,7 +153,7 @@ export default function Sidebar() {
                   className={`w-full justify-start text-sm ${
                     selectedDepartment === dept.name ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''
                   }`}
-                  onClick={() => setSelectedDepartment(dept.name === selectedDepartment ? null : dept.name)}
+                  onClick={() => handleDepartmentSelect(dept.name)}
                 >
                   {dept.name}
                 </Button>
@@ -170,7 +186,12 @@ export default function Sidebar() {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button onClick={handleAddDepartment}>Add Department</Button>
+                    <Button 
+                      onClick={handleAddDepartment}
+                      className="bg-medical hover:bg-medical-dark"
+                    >
+                      Add Department
+                    </Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>

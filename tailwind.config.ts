@@ -19,6 +19,9 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'noto-sans': ['Noto Sans', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -64,8 +67,8 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				medical: {
-					DEFAULT: '#1E88E5',
-					dark: '#1565C0',
+					DEFAULT: '#12d4d0',
+					dark: '#1c847f',
 					light: '#64B5F6',
 					contrast: '#FFFFFF'
 				}

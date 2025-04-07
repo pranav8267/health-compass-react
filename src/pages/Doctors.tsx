@@ -32,6 +32,7 @@ export default function Doctors() {
     const savedDepartment = localStorage.getItem('selectedDepartment');
     if (savedDepartment) {
       setSelectedDepartment(savedDepartment);
+      console.log('Loading selected department:', savedDepartment);
     }
   }, []);
 
@@ -136,10 +137,12 @@ export default function Doctors() {
   // Filter doctors by department if one is selected
   const filteredDoctors = selectedDepartment 
     ? doctors.filter(doctor => 
-        doctor.department.toLowerCase() === selectedDepartment.toLowerCase() || 
-        doctor.specialty.toLowerCase() === selectedDepartment.toLowerCase()
-      )
+        doctor.department.toLowerCase() === selectedDepartment.toLowerCase())
     : doctors;
+
+  console.log('Selected department:', selectedDepartment);
+  console.log('Filtered doctors:', filteredDoctors);
+  console.log('All doctors:', doctors);
 
   return (
     <Layout>
@@ -156,7 +159,7 @@ export default function Doctors() {
 
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-medical">
+              <Button className="bg-medical hover:bg-medical-dark">
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Onboard a Doctor
               </Button>
@@ -276,7 +279,7 @@ export default function Doctors() {
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button type="submit" className="bg-medical">Add Doctor</Button>
+                  <Button type="submit" className="bg-medical hover:bg-medical-dark">Add Doctor</Button>
                 </DialogFooter>
               </form>
             </DialogContent>

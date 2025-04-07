@@ -29,6 +29,7 @@ export default function Patients() {
     const savedDepartment = localStorage.getItem('selectedDepartment');
     if (savedDepartment) {
       setSelectedDepartment(savedDepartment);
+      console.log('Loading selected department:', savedDepartment);
     }
   }, []);
   
@@ -153,6 +154,9 @@ export default function Patients() {
     ? searchFiltered.filter(patient => patient.department.toLowerCase() === selectedDepartment.toLowerCase())
     : searchFiltered;
 
+  console.log('Selected department in Patients:', selectedDepartment);
+  console.log('Filtered patients:', filteredPatients.length);
+
   return (
     <Layout>
       <div className="space-y-6">
@@ -181,7 +185,7 @@ export default function Patients() {
                 <Button variant="outline" size="icon">
                   <Filter className="h-4 w-4" />
                 </Button>
-                <Button>
+                <Button className="bg-medical hover:bg-medical-dark">
                   <Download className="mr-2 h-4 w-4" />
                   Export
                 </Button>
