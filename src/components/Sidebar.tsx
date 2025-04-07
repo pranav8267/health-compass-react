@@ -101,20 +101,14 @@ export default function Sidebar() {
   };
 
   return (
-    <aside 
-      className={`bg-sidebar fixed h-screen shadow-md transition-all duration-300 border-r z-20 ${
-        collapsed ? 'w-20' : 'w-64'
-      }`}
-    >
+    <div className={`bg-sidebar fixed h-full shadow-md border-r w-64`}>
       <div className="flex items-center justify-between p-4 border-b">
-        {!collapsed && (
-          <h1 className="text-xl font-bold text-primary">HMS Portal</h1>
-        )}
+        <h1 className="text-xl font-bold text-primary">HMS Portal</h1>
         <Button 
           variant="ghost" 
-          size="icon" 
+          size="icon"
           onClick={() => setCollapsed(!collapsed)}
-          className={collapsed ? "mx-auto" : "ml-auto"}
+          className="ml-auto"
         >
           <Menu className="h-5 w-5" />
         </Button>
@@ -124,21 +118,17 @@ export default function Sidebar() {
         <div className="mb-6">
           <Button
             variant="ghost"
-            className={`flex items-center w-full mb-2 ${
-              collapsed ? 'justify-center px-0' : 'justify-between'
-            }`}
+            className="flex items-center w-full mb-2 justify-between"
             onClick={() => setShowDepartments(!showDepartments)}
           >
             <div className="flex items-center">
               <Building className="w-5 h-5" />
-              {!collapsed && <span className="ml-3">Departments</span>}
+              <span className="ml-3">Departments</span>
             </div>
-            {!collapsed && (
-              <span>{showDepartments ? '−' : '+'}</span>
-            )}
+            <span>{showDepartments ? '−' : '+'}</span>
           </Button>
 
-          {showDepartments && !collapsed && (
+          {showDepartments && (
             <div className="ml-8 space-y-2">
               {departments.map((dept) => (
                 <Button
@@ -197,10 +187,10 @@ export default function Sidebar() {
                   location.pathname === link.path
                     ? 'bg-sidebar-accent text-sidebar-accent-foreground'
                     : 'text-sidebar-foreground hover:bg-sidebar-accent/50'
-                } ${collapsed ? 'justify-center' : 'justify-start'}`}
+                } justify-start`}
               >
                 {link.icon}
-                {!collapsed && <span className="ml-3">{link.title}</span>}
+                <span className="ml-3">{link.title}</span>
               </Link>
             </li>
           ))}
@@ -209,16 +199,14 @@ export default function Sidebar() {
         <div className="absolute bottom-4 left-0 right-0 p-4">
           <Button 
             variant="ghost" 
-            className={`flex items-center p-3 w-full text-sidebar-foreground hover:bg-sidebar-accent/50 rounded-md ${
-              collapsed ? 'justify-center' : 'justify-start'
-            }`}
+            className="flex items-center p-3 w-full text-sidebar-foreground hover:bg-sidebar-accent/50 rounded-md justify-start"
             onClick={logout}
           >
             <LogOut className="w-5 h-5" />
-            {!collapsed && <span className="ml-3">Logout</span>}
+            <span className="ml-3">Logout</span>
           </Button>
         </div>
       </nav>
-    </aside>
+    </div>
   );
 }

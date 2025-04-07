@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Send, Search } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -48,7 +48,7 @@ export default function ChatBox() {
   };
 
   return (
-    <div className="w-1/3 border-l border-gray-200 bg-gray-50 flex flex-col h-full">
+    <div className="h-full border-l border-gray-200 bg-gray-50 flex flex-col">
       <div className="p-4 border-b">
         <h2 className="text-lg font-semibold">HMS Assistant</h2>
         <p className="text-sm text-muted-foreground">Ask me anything about the hospital</p>

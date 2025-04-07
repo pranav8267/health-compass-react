@@ -23,14 +23,26 @@ export default function Layout({ children, className }: LayoutProps) {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className="hms-container flex h-screen overflow-hidden">
-      <Sidebar />
-      <main className={cn("flex-1 overflow-y-auto", className)}>
-        <div className="container px-4 py-6 mx-auto">
-          {children}
+    <div className="flex h-screen overflow-hidden">
+      {/* Sidebar */}
+      <div className="sidebar-container fixed h-full z-30">
+        <Sidebar />
+      </div>
+      
+      {/* Main content */}
+      <div className="flex flex-1 ml-64">
+        {/* Page content */}
+        <main className={cn("flex-1 overflow-y-auto p-6", className)}>
+          <div className="container mx-auto">
+            {children}
+          </div>
+        </main>
+        
+        {/* Chat */}
+        <div className="chat-container w-1/3">
+          <ChatBox />
         </div>
-      </main>
-      <ChatBox />
+      </div>
     </div>
   );
 }

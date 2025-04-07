@@ -96,11 +96,13 @@
 }
 
 @layer components {
-  .hms-container {
-    @apply min-h-screen flex;
+  .sidebar-container {
+    width: 16rem;
+    z-index: 50;
   }
   
-  .hms-main-content {
-    @apply flex-1 p-4 lg:p-6 overflow-auto;
+  .chat-container {
+    width: 33.333%;
+    height: 100vh;
   }
 }
