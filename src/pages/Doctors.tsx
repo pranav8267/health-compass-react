@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,12 +20,21 @@ interface Doctor {
   phone: string;
   availability: string;
   image: string;
+  department: string;
 }
 
 export default function Doctors() {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
+  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
   
+  useEffect(() => {
+    const savedDepartment = localStorage.getItem('selectedDepartment');
+    if (savedDepartment) {
+      setSelectedDepartment(savedDepartment);
+    }
+  }, []);
+
   // Sample doctors data
   const [doctors, setDoctors] = useState<Doctor[]>([
     {
@@ -36,7 +45,8 @@ export default function Doctors() {
       email: 'james.wilson@hospital.com',
       phone: '(555) 123-4567',
       availability: 'Mon, Wed, Fri',
-      image: 'https://randomuser.me/api/portraits/men/42.jpg'
+      image: 'https://randomuser.me/api/portraits/men/42.jpg',
+      department: 'Cardiology'
     },
     {
       id: '2',
@@ -46,7 +56,8 @@ export default function Doctors() {
       email: 'sarah.johnson@hospital.com',
       phone: '(555) 987-6543',
       availability: 'Tue, Thu',
-      image: 'https://randomuser.me/api/portraits/women/64.jpg'
+      image: 'https://randomuser.me/api/portraits/women/64.jpg',
+      department: 'Neurology'
     },
     {
       id: '3',
@@ -56,17 +67,19 @@ export default function Doctors() {
       email: 'michael.chen@hospital.com',
       phone: '(555) 456-7890',
       availability: 'Mon-Fri',
-      image: 'https://randomuser.me/api/portraits/men/22.jpg'
+      image: 'https://randomuser.me/api/portraits/men/22.jpg',
+      department: 'Pediatrics'
     },
     {
       id: '4',
       name: 'Dr. Emily Rodriguez',
-      specialty: 'Dermatology',
+      specialty: 'Psychology',
       experience: '6 years',
       email: 'emily.rodriguez@hospital.com',
       phone: '(555) 789-0123',
       availability: 'Wed, Thu, Fri',
-      image: 'https://randomuser.me/api/portraits/women/45.jpg'
+      image: 'https://randomuser.me/api/portraits/women/45.jpg',
+      department: 'Psychology'
     }
   ]);
 
@@ -77,6 +90,7 @@ export default function Doctors() {
     email: '',
     phone: '',
     availability: '',
+    department: ''
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -96,6 +110,7 @@ export default function Doctors() {
       ...newDoctor,
       id: `${doctors.length + 1}`,
       image: `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${Math.floor(Math.random() * 100)}.jpg`,
+      department: newDoctor.department || newDoctor.specialty  // Default to specialty if department is not set
     };
     
     setDoctors([...doctors, doctorWithId as Doctor]);
@@ -114,8 +129,17 @@ export default function Doctors() {
       email: '',
       phone: '',
       availability: '',
+      department: ''
     });
   };
+
+  // Filter doctors by department if one is selected
+  const filteredDoctors = selectedDepartment 
+    ? doctors.filter(doctor => 
+        doctor.department.toLowerCase() === selectedDepartment.toLowerCase() || 
+        doctor.specialty.toLowerCase() === selectedDepartment.toLowerCase()
+      )
+    : doctors;
 
   return (
     <Layout>
@@ -123,7 +147,11 @@ export default function Doctors() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">My Doctors</h1>
-            <p className="text-muted-foreground">Manage and view hospital doctors.</p>
+            <p className="text-muted-foreground">
+              {selectedDepartment 
+                ? `Showing doctors in ${selectedDepartment} department` 
+                : "Manage and view hospital doctors"}
+            </p>
           </div>
 
           <Dialog open={open} onOpenChange={setOpen}>
@@ -167,6 +195,7 @@ export default function Doctors() {
                           <SelectItem value="Cardiology">Cardiology</SelectItem>
                           <SelectItem value="Neurology">Neurology</SelectItem>
                           <SelectItem value="Pediatrics">Pediatrics</SelectItem>
+                          <SelectItem value="Psychology">Psychology</SelectItem>
                           <SelectItem value="Dermatology">Dermatology</SelectItem>
                           <SelectItem value="Orthopedics">Orthopedics</SelectItem>
                           <SelectItem value="Gynecology">Gynecology</SelectItem>
@@ -178,6 +207,24 @@ export default function Doctors() {
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
+                      <Label htmlFor="department">Department</Label>
+                      <Select 
+                        onValueChange={(value) => handleSelectChange(value, 'department')}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select department" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="General Medicine">General Medicine</SelectItem>
+                          <SelectItem value="Cardiology">Cardiology</SelectItem>
+                          <SelectItem value="Pediatrics">Pediatrics</SelectItem>
+                          <SelectItem value="Neurology">Neurology</SelectItem>
+                          <SelectItem value="Psychology">Psychology</SelectItem>
+                          <SelectItem value="Dermatology">Dermatology</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
                       <Label htmlFor="experience">Experience</Label>
                       <Input
                         id="experience"
@@ -188,6 +235,9 @@ export default function Doctors() {
                         required
                       />
                     </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="availability">Availability</Label>
                       <Input
@@ -199,9 +249,6 @@ export default function Doctors() {
                         required
                       />
                     </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
                       <Input
@@ -214,17 +261,18 @@ export default function Doctors() {
                         required
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone</Label>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        value={newDoctor.phone}
-                        onChange={handleInputChange}
-                        placeholder="(555) 123-4567"
-                        required
-                      />
-                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      value={newDoctor.phone}
+                      onChange={handleInputChange}
+                      placeholder="(555) 123-4567"
+                      required
+                    />
                   </div>
                 </div>
                 <DialogFooter>
@@ -235,46 +283,56 @@ export default function Doctors() {
           </Dialog>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {doctors.map((doctor) => (
-            <Card key={doctor.id} className="overflow-hidden">
-              <CardContent className="p-0">
-                <div className="relative">
-                  <img
-                    src={doctor.image}
-                    alt={doctor.name}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                    <h3 className="font-bold text-white text-lg">{doctor.name}</h3>
-                    <p className="text-white/80">{doctor.specialty}</p>
+        {filteredDoctors.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-lg text-muted-foreground">No doctors found in this department.</p>
+          </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {filteredDoctors.map((doctor) => (
+              <Card key={doctor.id} className="overflow-hidden">
+                <CardContent className="p-0">
+                  <div className="relative">
+                    <img
+                      src={doctor.image}
+                      alt={doctor.name}
+                      className="w-full h-48 object-cover"
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                      <h3 className="font-bold text-white text-lg">{doctor.name}</h3>
+                      <p className="text-white/80">{doctor.specialty}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="p-4 space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Experience:</span>
-                    <span className="text-sm font-medium">{doctor.experience}</span>
+                  <div className="p-4 space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Department:</span>
+                      <span className="text-sm font-medium">{doctor.department}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Experience:</span>
+                      <span className="text-sm font-medium">{doctor.experience}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Email:</span>
+                      <span className="text-sm font-medium">{doctor.email}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Phone:</span>
+                      <span className="text-sm font-medium">{doctor.phone}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Availability:</span>
+                      <span className="text-sm font-medium">{doctor.availability}</span>
+                    </div>
+                    <div className="pt-2">
+                      <Button variant="outline" className="w-full">View Profile</Button>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Email:</span>
-                    <span className="text-sm font-medium">{doctor.email}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Phone:</span>
-                    <span className="text-sm font-medium">{doctor.phone}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">Availability:</span>
-                    <span className="text-sm font-medium">{doctor.availability}</span>
-                  </div>
-                  <div className="pt-2">
-                    <Button variant="outline" className="w-full">View Profile</Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     </Layout>
   );

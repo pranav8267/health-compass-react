@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   UserRound, 
@@ -9,10 +9,16 @@ import {
   Wallet, 
   MessageSquare, 
   Menu, 
-  LogOut 
+  LogOut,
+  Plus,
+  Building
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useAuth } from '@/contexts/AuthContext';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from "@/components/ui/use-toast";
 
 interface SidebarLink {
   title: string;
@@ -21,10 +27,41 @@ interface SidebarLink {
   requiresAuth?: boolean;
 }
 
+interface Department {
+  id: string;
+  name: string;
+}
+
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const [departments, setDepartments] = useState<Department[]>([
+    { id: '1', name: 'General Medicine' },
+    { id: '2', name: 'Cardiology' },
+    { id: '3', name: 'Pediatrics' }
+  ]);
+  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
+  const [showDepartments, setShowDepartments] = useState(false);
+  const [newDepartmentName, setNewDepartmentName] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
+  
   const location = useLocation();
   const { logout } = useAuth();
+  const { toast } = useToast();
+
+  // Store selected department in localStorage
+  useEffect(() => {
+    if (selectedDepartment) {
+      localStorage.setItem('selectedDepartment', selectedDepartment);
+    }
+  }, [selectedDepartment]);
+
+  // Load selected department from localStorage
+  useEffect(() => {
+    const savedDepartment = localStorage.getItem('selectedDepartment');
+    if (savedDepartment) {
+      setSelectedDepartment(savedDepartment);
+    }
+  }, []);
 
   const links: SidebarLink[] = [
     { title: 'My Doctors', path: '/doctors', icon: <UserRound className="w-5 h-5" /> },
@@ -44,6 +81,24 @@ export default function Sidebar() {
       requiresAuth: true
     },
   ];
+
+  const handleAddDepartment = () => {
+    if (!newDepartmentName.trim()) return;
+    
+    const newDepartment: Department = {
+      id: Date.now().toString(),
+      name: newDepartmentName,
+    };
+    
+    setDepartments([...departments, newDepartment]);
+    setNewDepartmentName('');
+    setOpenDialog(false);
+    
+    toast({
+      title: "Department Added",
+      description: `${newDepartmentName} department has been created.`,
+    });
+  };
 
   return (
     <aside 
@@ -65,7 +120,74 @@ export default function Sidebar() {
         </Button>
       </div>
 
-      <nav className="p-4">
+      <nav className="p-4 overflow-y-auto h-[calc(100vh-70px)]">
+        <div className="mb-6">
+          <Button
+            variant="ghost"
+            className={`flex items-center w-full mb-2 ${
+              collapsed ? 'justify-center px-0' : 'justify-between'
+            }`}
+            onClick={() => setShowDepartments(!showDepartments)}
+          >
+            <div className="flex items-center">
+              <Building className="w-5 h-5" />
+              {!collapsed && <span className="ml-3">Departments</span>}
+            </div>
+            {!collapsed && (
+              <span>{showDepartments ? '−' : '+'}</span>
+            )}
+          </Button>
+
+          {showDepartments && !collapsed && (
+            <div className="ml-8 space-y-2">
+              {departments.map((dept) => (
+                <Button
+                  key={dept.id}
+                  variant="ghost"
+                  className={`w-full justify-start text-sm ${
+                    selectedDepartment === dept.name ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''
+                  }`}
+                  onClick={() => setSelectedDepartment(dept.name === selectedDepartment ? null : dept.name)}
+                >
+                  {dept.name}
+                </Button>
+              ))}
+              
+              <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                <DialogTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full mt-2 flex items-center"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Department
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add New Department</DialogTitle>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Department Name</Label>
+                      <Input
+                        id="name"
+                        value={newDepartmentName}
+                        onChange={(e) => setNewDepartmentName(e.target.value)}
+                        placeholder="e.g., Psychology"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button onClick={handleAddDepartment}>Add Department</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+          )}
+        </div>
+
         <ul className="space-y-2">
           {links.map((link) => (
             <li key={link.path}>
