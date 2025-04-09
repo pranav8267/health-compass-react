@@ -66,7 +66,7 @@ export default function FloatingChat() {
             <MessageSquare className="h-6 w-6" />
           </Button>
         </DialogTrigger>
-        <DialogContent className="w-[400px] bottom-20 right-6 absolute p-0 rounded-xl">
+        <DialogContent className="w-[350px] absolute bottom-24 right-6 p-0 rounded-xl">
           <DialogHeader className="p-4 border-b">
             <DialogTitle className="text-lg font-semibold">HMS Assistant</DialogTitle>
             <div className="mt-2 relative">
