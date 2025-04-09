@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { MessageSquare, Send, Search } from 'lucide-react';
+import { MessageSquare, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -69,13 +69,6 @@ export default function FloatingChat() {
         <DialogContent className="w-[400px] bottom-20 right-6 absolute p-0 rounded-xl">
           <DialogHeader className="p-4 border-b">
             <DialogTitle className="text-lg font-semibold">HMS Assistant</DialogTitle>
-            <div className="mt-2 relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder="Search knowledge base..." 
-                className="pl-8" 
-              />
-            </div>
           </DialogHeader>
           
           <div className="flex flex-col h-[400px]">
@@ -109,7 +102,7 @@ export default function FloatingChat() {
             >
               <Input
                 type="text"
-                placeholder="Ask a question..."
+                placeholder="Search or ask a question..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 className="flex-1"

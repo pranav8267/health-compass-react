@@ -11,9 +11,7 @@ import {
   Menu, 
   LogOut,
   Plus,
-  Building,
-  ChevronLeft,
-  ChevronRight
+  Building
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useAuth } from '@/contexts/AuthContext';
@@ -21,7 +19,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from "@/components/ui/use-toast";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SidebarLink {
   title: string;
@@ -50,20 +47,6 @@ export default function Sidebar() {
   const location = useLocation();
   const { logout } = useAuth();
   const { toast } = useToast();
-  const isMobile = useIsMobile();
-
-  // Load saved collapsed state
-  useEffect(() => {
-    const savedCollapsed = localStorage.getItem('sidebarCollapsed');
-    if (savedCollapsed) {
-      setCollapsed(savedCollapsed === 'true');
-    }
-  }, []);
-
-  // Store collapsed state
-  useEffect(() => {
-    localStorage.setItem('sidebarCollapsed', String(collapsed));
-  }, [collapsed]);
 
   // Store selected department in localStorage
   useEffect(() => {
@@ -127,50 +110,41 @@ export default function Sidebar() {
     }
   };
 
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-  };
-
-  const sidebarWidth = collapsed ? 'w-16' : 'w-64';
-
   return (
-    <div className={`bg-sidebar fixed h-full shadow-md border-r transition-all duration-300 ${sidebarWidth}`}>
+    <div className={`bg-sidebar fixed h-full shadow-md border-r w-64`}>
       <div className="flex items-center justify-between p-4 border-b">
-        {!collapsed && (
-          <div className="flex items-center">
-            <img 
-              src="/lovable-uploads/d42ca3b9-6a51-4cc1-8418-fb5697cf7028.png" 
-              alt="Doctora.ai Logo" 
-              className="h-8"
-            />
-          </div>
-        )}
+        <div className="flex items-center">
+          <img 
+            src="/lovable-uploads/d42ca3b9-6a51-4cc1-8418-fb5697cf7028.png" 
+            alt="Doctora.ai Logo" 
+            className="h-8"
+          />
+        </div>
         <Button 
           variant="ghost" 
           size="icon"
-          onClick={toggleCollapsed}
-          className={`${collapsed ? 'ml-auto mr-auto' : 'ml-auto'}`}
-          aria-label="Toggle sidebar"
+          onClick={() => setCollapsed(!collapsed)}
+          className="ml-auto"
         >
-          {collapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+          <Menu className="h-5 w-5" />
         </Button>
       </div>
 
-      <nav className="p-2 overflow-y-auto h-[calc(100vh-70px)]">
-        <div className="mb-4">
+      <nav className="p-4 overflow-y-auto h-[calc(100vh-70px)]">
+        <div className="mb-6">
           <Button
             variant="ghost"
-            className={`flex items-center w-full mb-2 justify-between ${collapsed ? 'px-2' : ''}`}
-            onClick={() => !collapsed && setShowDepartments(!showDepartments)}
+            className="flex items-center w-full mb-2 justify-between"
+            onClick={() => setShowDepartments(!showDepartments)}
           >
             <div className="flex items-center">
               <Building className="w-5 h-5" />
-              {!collapsed && <span className="ml-3">Departments</span>}
+              <span className="ml-3">Departments</span>
             </div>
-            {!collapsed && <span>{showDepartments ? '−' : '+'}</span>}
+            <span>{showDepartments ? '−' : '+'}</span>
           </Button>
 
-          {showDepartments && !collapsed && (
+          {showDepartments && (
             <div className="ml-8 space-y-2">
               {departments.map((dept) => (
                 <Button
@@ -230,29 +204,27 @@ export default function Sidebar() {
             <li key={link.path}>
               <Link
                 to={link.path}
-                className={`flex items-center ${collapsed ? 'p-2 justify-center' : 'p-3 justify-start'} rounded-md transition-colors ${
+                className={`flex items-center p-3 rounded-md transition-colors ${
                   location.pathname === link.path
                     ? 'bg-sidebar-accent text-sidebar-accent-foreground'
                     : 'text-sidebar-foreground hover:bg-sidebar-accent/50'
-                }`}
-                title={collapsed ? link.title : ""}
+                } justify-start`}
               >
                 {link.icon}
-                {!collapsed && <span className="ml-3">{link.title}</span>}
+                <span className="ml-3">{link.title}</span>
               </Link>
             </li>
           ))}
         </ul>
 
-        <div className={`absolute bottom-4 ${collapsed ? 'left-0 right-0 flex justify-center' : 'left-0 right-0 p-4'}`}>
+        <div className="absolute bottom-4 left-0 right-0 p-4">
           <Button 
             variant="ghost" 
-            className={`flex items-center ${collapsed ? 'p-2 justify-center w-12 h-12' : 'p-3 w-full justify-start'} text-sidebar-foreground hover:bg-sidebar-accent/50 rounded-md`}
+            className="flex items-center p-3 w-full text-sidebar-foreground hover:bg-sidebar-accent/50 rounded-md justify-start"
             onClick={logout}
-            title={collapsed ? "Logout" : ""}
           >
             <LogOut className="w-5 h-5" />
-            {!collapsed && <span className="ml-3">Logout</span>}
+            <span className="ml-3">Logout</span>
           </Button>
         </div>
       </nav>

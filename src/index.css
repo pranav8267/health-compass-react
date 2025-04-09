@@ -99,7 +99,7 @@
 
 @layer components {
   .sidebar-container {
-    transition: width 0.3s ease;
+    width: 16rem;
     z-index: 50;
   }
 }
