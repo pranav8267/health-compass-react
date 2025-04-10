@@ -1,8 +1,10 @@
-
+import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { Calendar } from 'lucide-react';
 
 interface Booking {
   id: string;
@@ -17,6 +19,12 @@ interface Booking {
 }
 
 export default function Bookings() {
+  const navigate = useNavigate();
+
+  const handleMakeBooking = () => {
+    navigate('/book-appointment');
+  };
+
   // Sample bookings data
   const bookings: Booking[] = [
     {
@@ -171,9 +179,19 @@ export default function Bookings() {
   return (
     <Layout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">My Bookings</h1>
-          <p className="text-muted-foreground">Manage patient appointments and doctor schedules.</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">My Bookings</h1>
+            <p className="text-muted-foreground">Manage patient appointments and doctor schedules.</p>
+          </div>
+
+          <Button 
+            className="bg-medical hover:bg-medical-dark"
+            onClick={handleMakeBooking}
+          >
+            <Calendar className="mr-2 h-4 w-4" />
+            Make a Booking
+          </Button>
         </div>
 
         <Tabs defaultValue="all">

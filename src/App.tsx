@@ -21,6 +21,7 @@ import DoctorDetails from "./pages/DoctorDetails";
 import AddPatient from "./pages/AddPatient";
 import PatientDetails from "./pages/PatientDetails";
 import AddBilling from "./pages/AddBilling";
+import BookAppointment from "./pages/BookAppointment";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/onboard-doctor" element={<OnboardDoctor />} />
             <Route path="/doctor/:doctorId" element={<DoctorDetails />} />
             <Route path="/bookings" element={<Bookings />} />
+            <Route path="/book-appointment" element={<BookAppointment />} />
             <Route path="/patients" element={<Patients />} />
             <Route path="/add-patient" element={<AddPatient />} />
             <Route path="/patient/:patientId" element={<PatientDetails />} />
