@@ -1,10 +1,11 @@
 
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Download, Filter } from 'lucide-react';
+import { Search, Download, Filter, UserPlus } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 interface Patient {
@@ -24,6 +25,7 @@ interface Patient {
 export default function Patients() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
+  const navigate = useNavigate();
   
   useEffect(() => {
     const savedDepartment = localStorage.getItem('selectedDepartment');
@@ -154,19 +156,37 @@ export default function Patients() {
     ? searchFiltered.filter(patient => patient.department.toLowerCase() === selectedDepartment.toLowerCase())
     : searchFiltered;
 
+  const handleAddPatient = () => {
+    navigate('/add-patient');
+  };
+
+  const handleViewPatient = (patientId: string) => {
+    navigate(`/patient/${patientId}`);
+  };
+
   console.log('Selected department in Patients:', selectedDepartment);
   console.log('Filtered patients:', filteredPatients.length);
 
   return (
     <Layout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">My Patients</h1>
-          <p className="text-muted-foreground">
-            {selectedDepartment 
-              ? `Showing patients in ${selectedDepartment} department` 
-              : "View and manage patient records"}
-          </p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">My Patients</h1>
+            <p className="text-muted-foreground">
+              {selectedDepartment 
+                ? `Showing patients in ${selectedDepartment} department` 
+                : "View and manage patient records"}
+            </p>
+          </div>
+          
+          <Button 
+            className="bg-medical hover:bg-medical-dark"
+            onClick={handleAddPatient}
+          >
+            <UserPlus className="mr-2 h-4 w-4" />
+            Add Patient
+          </Button>
         </div>
 
         <Card>
@@ -215,7 +235,11 @@ export default function Patients() {
                   </TableHeader>
                   <TableBody>
                     {filteredPatients.map((patient) => (
-                      <TableRow key={patient.id}>
+                      <TableRow 
+                        key={patient.id} 
+                        className="cursor-pointer hover:bg-muted/50"
+                        onClick={() => handleViewPatient(patient.id)}
+                      >
                         <TableCell className="font-medium">{patient.id}</TableCell>
                         <TableCell>{patient.name}</TableCell>
                         <TableCell>{patient.age} / {patient.gender}</TableCell>

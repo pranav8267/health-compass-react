@@ -16,6 +16,11 @@ import Billing from "./pages/Billing";
 import Accounts from "./pages/Accounts";
 import Communication from "./pages/Communication";
 import NotFound from "./pages/NotFound";
+import OnboardDoctor from "./pages/OnboardDoctor";
+import DoctorDetails from "./pages/DoctorDetails";
+import AddPatient from "./pages/AddPatient";
+import PatientDetails from "./pages/PatientDetails";
+import AddBilling from "./pages/AddBilling";
 
 const queryClient = new QueryClient();
 
@@ -31,9 +36,14 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/doctors" element={<Doctors />} />
+            <Route path="/onboard-doctor" element={<OnboardDoctor />} />
+            <Route path="/doctor/:doctorId" element={<DoctorDetails />} />
             <Route path="/bookings" element={<Bookings />} />
             <Route path="/patients" element={<Patients />} />
+            <Route path="/add-patient" element={<AddPatient />} />
+            <Route path="/patient/:patientId" element={<PatientDetails />} />
             <Route path="/billing" element={<Billing />} />
+            <Route path="/add-billing" element={<AddBilling />} />
             <Route path="/accounts" element={
               <ProtectedRoute>
                 <Accounts />
